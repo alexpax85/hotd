@@ -1,0 +1,19 @@
+{
+  "name": "La Bussola di Westeros",
+  "short_name": "Bussola",
+  "description": "Ripasso di Game of Thrones: casate, personaggi, legami, cronologia e alberi genealogici. Senza spoiler sul prequel.",
+  "lang": "it",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#14171d",
+  "theme_color": "#14171d",
+  "categories": ["entertainment", "books", "education"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

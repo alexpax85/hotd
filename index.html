@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>La Bussola di Westeros — Ripasso di Game of Thrones</title>
+<meta name="theme-color" content="#14171d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Bussola">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/favicon-32.png">
+<style>
+@font-face{font-family:'Cinzel';font-style:normal;font-weight:700;font-display:swap;src:url('fonts/cinzel-latin-700-normal.woff2') format('woff2')}
+@font-face{font-family:'Cinzel';font-style:normal;font-weight:900;font-display:swap;src:url('fonts/cinzel-latin-900-normal.woff2') format('woff2')}
+@font-face{font-family:'EB Garamond';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/eb-garamond-latin-400-normal.woff2') format('woff2')}
+@font-face{font-family:'EB Garamond';font-style:italic;font-weight:400;font-display:swap;src:url('fonts/eb-garamond-latin-400-italic.woff2') format('woff2')}
+@font-face{font-family:'EB Garamond';font-style:normal;font-weight:500;font-display:swap;src:url('fonts/eb-garamond-latin-500-normal.woff2') format('woff2')}
+@font-face{font-family:'Spectral SC';font-style:normal;font-weight:500;font-display:swap;src:url('fonts/spectral-sc-latin-500-normal.woff2') format('woff2')}
+@font-face{font-family:'Spectral SC';font-style:normal;font-weight:600;font-display:swap;src:url('fonts/spectral-sc-latin-600-normal.woff2') format('woff2')}
+</style>
+<style>
+  :root{
+    --bg:#14171d;
+    --bg-2:#1a1e26;
+    --panel:#1f242e;
+    --panel-2:#252b37;
+    --line:#3a3c34;
+    --line-soft:#2c2f29;
+    --ink:#e9e1cf;
+    --ink-soft:#bdb49d;
+    --ink-faint:#8c8675;
+    --gold:#c9a24b;
+    --gold-bright:#dcb863;
+    --ember:#b04a2c;
+    --shadow:rgba(0,0,0,.45);
+    --display:"Cinzel",Georgia,serif;
+    --sc:"Spectral SC","Cinzel",Georgia,serif;
+    --body:"EB Garamond",Georgia,"Times New Roman",serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:
+      radial-gradient(1200px 600px at 50% -10%, #1c212b 0%, var(--bg) 55%) fixed,
+      var(--bg);
+    color:var(--ink);
+    font-family:var(--body);
+    font-size:18px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px 80px}
+
+  /* ---------- Header ---------- */
+  header.top{padding:46px 0 18px;text-align:center}
+  .eyebrow{
+    font-family:var(--sc);
+    letter-spacing:.34em;
+    text-transform:uppercase;
+    font-size:12px;
+    color:var(--gold);
+    margin:0 0 14px;
+  }
+  h1.title{
+    font-family:var(--display);
+    font-weight:900;
+    font-size:clamp(30px,6vw,54px);
+    line-height:1.02;
+    letter-spacing:.02em;
+    margin:0;
+    color:var(--ink);
+    text-shadow:0 2px 18px rgba(0,0,0,.5);
+  }
+  h1.title .amp{color:var(--gold);font-weight:700}
+  .subtitle{
+    margin:14px auto 0;max-width:620px;
+    color:var(--ink-soft);font-size:18px;font-style:italic;
+  }
+  .rule{
+    width:120px;height:1px;margin:26px auto 0;
+    background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  }
+
+  /* ---------- Spoiler banner ---------- */
+  .spoilerbar{
+    margin:30px auto 0;max-width:760px;
+    border:1px solid var(--line);
+    border-left:3px solid var(--ember);
+    background:linear-gradient(180deg,var(--panel),var(--bg-2));
+    padding:16px 20px;border-radius:4px;
+    display:flex;gap:14px;align-items:flex-start;
+  }
+  .spoilerbar .mark{font-family:var(--display);color:var(--ember);font-size:22px;line-height:1}
+  .spoilerbar p{margin:0;font-size:15.5px;color:var(--ink-soft)}
+  .spoilerbar strong{color:var(--ink);font-weight:600}
+
+  /* ---------- Controls ---------- */
+  .controls{
+    position:sticky;top:0;z-index:30;
+    margin:30px -20px 0;padding:14px 20px;
+    background:linear-gradient(180deg,rgba(20,23,29,.97),rgba(20,23,29,.86));
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line-soft);
+  }
+  .search{
+    display:flex;align-items:center;gap:10px;
+    border:1px solid var(--line);border-radius:3px;
+    background:var(--bg-2);padding:11px 14px;max-width:560px;margin:0 auto;
+  }
+  .search svg{flex:0 0 auto;opacity:.6}
+  .search input{
+    flex:1;background:transparent;border:0;outline:0;
+    color:var(--ink);font-family:var(--body);font-size:17px;
+  }
+  .search input::placeholder{color:var(--ink-faint);font-style:italic}
+  .search .clr{cursor:pointer;color:var(--ink-faint);font-size:20px;line-height:1;padding:0 4px;display:none}
+
+  .tabsrow{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:14px}
+  .tab{
+    font-family:var(--sc);letter-spacing:.14em;text-transform:uppercase;font-size:13px;
+    color:var(--ink-faint);background:transparent;border:1px solid transparent;
+    padding:8px 16px;border-radius:3px;cursor:pointer;transition:.18s;
+  }
+  .tab:hover{color:var(--ink)}
+  .tab.active{color:var(--bg);background:var(--gold);border-color:var(--gold-bright)}
+
+  .togglerow{display:flex;justify-content:center;margin-top:12px}
+  .switch{display:inline-flex;align-items:center;gap:10px;cursor:pointer;user-select:none;
+    font-size:14px;color:var(--ink-soft)}
+  .switch .track{width:42px;height:22px;border-radius:12px;background:var(--panel-2);
+    border:1px solid var(--line);position:relative;transition:.18s}
+  .switch .knob{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;
+    background:var(--ink-faint);transition:.18s}
+  .switch.on .track{background:rgba(201,162,75,.25);border-color:var(--gold)}
+  .switch.on .knob{left:22px;background:var(--gold-bright)}
+
+  /* ---------- Sections ---------- */
+  main{margin-top:30px}
+  .panelhead{text-align:center;margin:8px 0 26px}
+  .panelhead h2{font-family:var(--display);font-weight:700;font-size:26px;margin:0;letter-spacing:.03em}
+  .panelhead p{margin:6px 0 0;color:var(--ink-faint);font-style:italic;font-size:16px}
+  section[hidden]{display:none}
+
+  /* ---------- House grid ---------- */
+  .houses{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+  .house{
+    border:1px solid var(--line-soft);border-radius:5px;overflow:hidden;
+    background:linear-gradient(180deg,var(--panel),var(--bg-2));
+    transition:transform .18s,border-color .18s;
+  }
+  .house:hover{transform:translateY(-3px);border-color:var(--hc,var(--gold))}
+  .house .band{height:4px;background:var(--hc)}
+  .house .inner{padding:18px 20px}
+  .seal{
+    width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-family:var(--display);font-weight:900;font-size:24px;color:#0f1116;
+    background:radial-gradient(circle at 35% 30%, color-mix(in srgb,var(--hc) 80%,white 20%), var(--hc));
+    box-shadow:0 0 0 1px rgba(255,255,255,.08),0 4px 14px var(--shadow);
+    margin-bottom:14px;
+  }
+  .house h3{font-family:var(--display);font-weight:700;font-size:21px;margin:0 0 2px;letter-spacing:.02em}
+  .house .seat{color:var(--ink-faint);font-size:14px;font-family:var(--sc);letter-spacing:.08em}
+  .house .words{margin:14px 0 4px;font-style:italic;color:var(--ink-soft);font-size:16px}
+  .house .words .orig{display:block;font-style:normal;font-size:12.5px;color:var(--ink-faint);
+    font-family:var(--sc);letter-spacing:.1em;margin-top:2px}
+  .house .status{margin:12px 0 0;font-size:14.5px;color:var(--ink-soft);border-top:1px solid var(--line-soft);padding-top:12px}
+  .members{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+  .chip{
+    font-size:13.5px;padding:5px 10px;border-radius:3px;cursor:pointer;
+    border:1px solid var(--line);background:var(--panel-2);color:var(--ink-soft);
+    transition:.15s;white-space:nowrap;
+  }
+  .chip:hover{color:var(--ink);border-color:var(--hc,var(--gold));background:var(--panel)}
+  .tnote{margin-top:14px;font-size:13.5px;color:var(--ink-faint);font-style:italic;
+    border-top:1px dashed var(--line-soft);padding-top:12px}
+
+  /* ---------- Character list ---------- */
+  .charfilter{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:22px}
+  .ftag{font-size:13px;font-family:var(--sc);letter-spacing:.1em;text-transform:uppercase;
+    padding:6px 12px;border:1px solid var(--line);border-radius:20px;background:var(--bg-2);
+    color:var(--ink-faint);cursor:pointer;transition:.15s}
+  .ftag:hover{color:var(--ink)}
+  .ftag.active{color:var(--bg);background:var(--gold);border-color:var(--gold)}
+  .chars{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:12px}
+  .pcard{
+    text-align:left;border:1px solid var(--line-soft);border-radius:5px;padding:14px 16px;cursor:pointer;
+    background:linear-gradient(180deg,var(--panel),var(--bg-2));transition:transform .15s,border-color .15s;
+    border-left:3px solid var(--hc,var(--line));
+  }
+  .pcard:hover{transform:translateY(-2px);border-color:var(--hc,var(--gold))}
+  .pcard .nm{font-family:var(--display);font-weight:700;font-size:18px;letter-spacing:.01em}
+  .pcard .rl{color:var(--ink-faint);font-size:14px;margin-top:2px}
+  .pcard .hs{display:inline-block;margin-top:8px;font-family:var(--sc);letter-spacing:.08em;
+    font-size:11.5px;text-transform:uppercase;color:var(--hc,var(--ink-faint))}
+
+  /* ---------- Timeline ---------- */
+  .phases{position:relative;padding-left:6px}
+  .phase{margin-bottom:34px}
+  .phase > .ph-title{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:.03em;
+    color:var(--gold-bright);margin:0 0 4px;display:flex;align-items:baseline;gap:12px}
+  .phase > .ph-sub{color:var(--ink-faint);font-style:italic;margin:0 0 16px;font-size:15px}
+  .ph-num{font-family:var(--sc);font-size:13px;letter-spacing:.2em;color:var(--ink-faint);
+    border:1px solid var(--line);border-radius:3px;padding:2px 8px}
+  .events{position:relative;margin-left:8px;padding-left:24px;border-left:1px solid var(--line)}
+  .evt{position:relative;padding:0 0 18px}
+  .evt::before{content:"";position:absolute;left:-30px;top:7px;width:9px;height:9px;border-radius:50%;
+    background:var(--bg);border:2px solid var(--gold)}
+  .evt h4{font-family:var(--sc);font-size:16px;letter-spacing:.03em;margin:0 0 3px;color:var(--ink)}
+  .evt p{margin:0;color:var(--ink-soft);font-size:16px}
+  .evt .links{margin-top:7px;display:flex;flex-wrap:wrap;gap:6px}
+
+  /* ---------- Glossary ---------- */
+  .terms{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px}
+  .term{border:1px solid var(--line-soft);border-radius:5px;padding:15px 18px;
+    background:linear-gradient(180deg,var(--panel),var(--bg-2))}
+  .term dt{font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:.02em;margin-bottom:5px}
+  .term dt span{display:block;font-family:var(--sc);font-size:11.5px;letter-spacing:.1em;
+    color:var(--gold);text-transform:uppercase;font-weight:500;margin-top:2px}
+  .term dd{margin:0;color:var(--ink-soft);font-size:15.5px}
+
+  /* ---------- Fate (spoiler-of-fate, GoT) ---------- */
+  .fate{margin-top:10px;border-top:1px dashed var(--line);padding-top:10px;font-size:15px}
+  .fate .lbl{font-family:var(--sc);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--ember);margin-right:8px}
+  body.hide-fates .fate .val{filter:blur(5px);opacity:.55;cursor:help;transition:.2s}
+  body.hide-fates .fate .val:hover{filter:none;opacity:1}
+
+  /* ---------- Alberi genealogici ---------- */
+  .treebox{max-width:940px;margin:0 auto;border:1px solid var(--line-soft);border-radius:5px;
+    background:linear-gradient(180deg,var(--panel),var(--bg-2));padding:22px 20px;overflow-x:auto}
+  ul.famtree,ul.famtree ul{list-style:none;margin:0;padding:0}
+  ul.famtree ul{margin-left:16px;padding-left:18px;border-left:1px dashed var(--line)}
+  ul.famtree li{margin:8px 0}
+  .fnode{display:inline-flex;flex-direction:column;text-align:left;vertical-align:middle;
+    border:1px solid var(--line-soft);border-left:3px solid var(--hc,var(--line));border-radius:4px;
+    background:var(--panel-2);padding:7px 12px;min-width:148px}
+  button.fnode{cursor:pointer;font-family:inherit;transition:transform .14s,border-color .14s}
+  button.fnode.go:hover{transform:translateY(-1px);border-color:var(--hc,var(--gold))}
+  .fnode .fn{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.01em;color:var(--ink)}
+  button.fnode.go .fn::after{content:" ›";color:var(--gold)}
+  .fnode .fr{font-family:var(--sc);font-size:11px;letter-spacing:.04em;color:var(--ink-faint);margin-top:1px}
+  .funion{display:inline-block;color:var(--ink-faint);margin:0 8px;font-size:14px;vertical-align:middle}
+  .fkl{font-family:var(--sc);letter-spacing:.14em;text-transform:uppercase;font-size:10.5px;color:var(--gold);margin:9px 0 2px}
+  .fnote{max-width:940px;margin:16px auto 0;font-size:14.5px;color:var(--ink-soft);font-style:italic;
+    border:1px solid var(--line-soft);border-left:3px solid var(--gold);border-radius:4px;
+    background:var(--bg-2);padding:13px 16px}
+  .fnote b{color:var(--gold-bright);font-style:normal}
+
+  /* ---------- Drawer (character detail) ---------- */
+  .scrim{position:fixed;inset:0;background:rgba(8,9,12,.66);opacity:0;pointer-events:none;
+    transition:.22s;z-index:50;backdrop-filter:blur(2px)}
+  .scrim.open{opacity:1;pointer-events:auto}
+  .drawer{position:fixed;top:0;right:0;height:100%;width:min(460px,92vw);z-index:60;
+    background:linear-gradient(180deg,var(--bg-2),var(--bg));border-left:1px solid var(--line);
+    transform:translateX(102%);transition:transform .26s cubic-bezier(.2,.7,.2,1);
+    box-shadow:-18px 0 50px rgba(0,0,0,.5);display:flex;flex-direction:column}
+  .drawer.open{transform:translateX(0)}
+  .drawer .dh{padding:22px 24px 16px;border-bottom:1px solid var(--line-soft);position:relative}
+  .drawer .dh .dband{position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--hc,var(--gold))}
+  .drawer .dclose{position:absolute;top:16px;right:18px;background:none;border:0;color:var(--ink-faint);
+    font-size:26px;cursor:pointer;line-height:1}
+  .drawer .dclose:hover{color:var(--ink)}
+  .drawer h3{font-family:var(--display);font-weight:900;font-size:25px;margin:0 0 2px;padding-right:30px}
+  .drawer .drole{color:var(--ink-faint);font-size:15px;font-style:italic}
+  .drawer .dhouse{display:inline-block;margin-top:10px;font-family:var(--sc);letter-spacing:.1em;
+    font-size:12px;text-transform:uppercase;color:var(--hc,var(--gold));
+    border:1px solid var(--hc,var(--line));border-radius:3px;padding:3px 9px}
+  .drawer .db{padding:20px 24px;overflow-y:auto}
+  .drawer .why{font-size:16.5px;color:var(--ink);margin:0 0 18px;line-height:1.55}
+  .relblock{margin-top:6px}
+  .relblock .rh{font-family:var(--sc);letter-spacing:.14em;text-transform:uppercase;font-size:11.5px;
+    color:var(--ink-faint);margin:0 0 8px;border-bottom:1px solid var(--line-soft);padding-bottom:6px}
+  .rel{display:flex;gap:10px;margin-bottom:9px;align-items:baseline}
+  .rel .rlabel{flex:0 0 96px;font-size:13.5px;color:var(--ink-faint);font-family:var(--sc);letter-spacing:.04em}
+  .rel .rvals{display:flex;flex-wrap:wrap;gap:6px}
+  .rel .rplain{color:var(--ink-soft);font-size:15px}
+
+  /* ---------- Search results ---------- */
+  .resultgroup{margin-bottom:26px}
+  .resultgroup .rgh{font-family:var(--sc);letter-spacing:.16em;text-transform:uppercase;font-size:12px;
+    color:var(--gold);margin:0 0 12px;border-bottom:1px solid var(--line-soft);padding-bottom:6px}
+  .empty{text-align:center;color:var(--ink-faint);font-style:italic;padding:40px 0}
+
+  footer{text-align:center;margin-top:60px;padding-top:24px;border-top:1px solid var(--line-soft);
+    color:var(--ink-faint);font-size:13.5px}
+  footer .vv{font-family:var(--sc);letter-spacing:.18em}
+
+  @media (max-width:560px){
+    body{font-size:17px}
+    .wrap{padding:0 14px 60px}
+    .rel .rlabel{flex-basis:80px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none!important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <p class="eyebrow">Prima del Drago · Ripasso senza spoiler</p>
+    <h1 class="title">La Bussola <span class="amp">di</span> Westeros</h1>
+    <p class="subtitle">Un compagno per ritrovare nomi, legami ed eventi di Game of Thrones, prima di entrare nella nuova serie.</p>
+    <div class="rule"></div>
+
+    <div class="spoilerbar">
+      <span class="mark">⚑</span>
+      <p><strong>Zona protetta.</strong> Questo strumento copre soltanto <strong>Game of Thrones</strong>. La storia profonda della Casa Targaryen — la guerra che <em>House of the Dragon</em> racconta — è volutamente esclusa, così nulla ti verrà rovinato.</p>
+    </div>
+  </header>
+
+  <div class="controls">
+    <div class="search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input id="q" type="text" placeholder="Cerca un nome, una casata, un evento, un termine…" autocomplete="off">
+      <span class="clr" id="clr">×</span>
+    </div>
+    <div class="tabsrow" id="tabs">
+      <button class="tab active" data-t="casate">Casate</button>
+      <button class="tab" data-t="personaggi">Personaggi &amp; Legami</button>
+      <button class="tab" data-t="cronologia">Cronologia</button>
+      <button class="tab" data-t="alberi">Alberi</button>
+      <button class="tab" data-t="glossario">Glossario</button>
+    </div>
+    <div class="togglerow">
+      <span class="switch on" id="fateSwitch" role="switch" aria-checked="true" tabindex="0">
+        <span class="track"><span class="knob"></span></span>
+        <span>Mostra esiti finali (fine serie)</span>
+      </span>
+    </div>
+  </div>
+
+  <main id="main"></main>
+
+  <footer>
+    <div class="vv">VALAR DOHAERIS</div>
+    <div style="margin-top:8px">Bozza di lavoro · costruita per ricordare, non per essere esaustiva.</div>
+  </footer>
+</div>
+
+<!-- Drawer -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true"></aside>
+
+<script>
+/* ============ DATI ============ */
+const HOUSES = [
+  {id:"stark",name:"Stark",hc:"#7b8794",seat:"Grande Inverno · Il Nord",mono:"S",
+   words:"L'inverno sta arrivando",orig:"Winter Is Coming",
+   status:"I custodi del Nord. La loro caduta apre la guerra; la loro tenacia la attraversa.",
+   members:["ned","catelyn","robb","sansa","arya","bran","jon","benjen","lyanna"]},
+  {id:"lannister",name:"Lannister",hc:"#9c1f2e",seat:"Castel Granito · Terre dell'Ovest",mono:"L",
+   words:"Un Lannister paga sempre i suoi debiti",orig:"Hear Me Roar (ufficiale)",
+   status:"Ricchi, orgogliosi e spietati. Il segreto della loro famiglia incendia il Continente.",
+   members:["tywin","cersei","jaime","tyrion","joffrey","tommen","myrcella"]},
+  {id:"baratheon",name:"Baratheon",hc:"#c8951f",seat:"Capo Tempesta · Approdo del Re",mono:"B",
+   words:"Nostra è la furia",orig:"Ours Is the Fury",
+   status:"La dinastia nata dalla Ribellione di Robert. Tre fratelli, tre pretese al trono.",
+   members:["robert","stannis","renly","gendry"]},
+  {id:"targaryen",name:"Targaryen",hc:"#9a2c33",seat:"Roccia del Drago · (in esilio)",mono:"T",
+   words:"Fuoco e Sangue",orig:"Fire and Blood",
+   status:"L'antica dinastia dei draghi, rovesciata dalla Ribellione. Due eredi sopravvivono in esilio.",
+   members:["daenerys","viserys","aerys","rhaegar"]},
+  {id:"tully",name:"Tully",hc:"#2f7fa0",seat:"Delta delle Acque · Le Terre dei Fiumi",mono:"T",
+   words:"Famiglia, Dovere, Onore",orig:"Family, Duty, Honor",
+   status:"La casa di Catelyn. Alleati naturali degli Stark per matrimonio.",
+   members:["catelyn","lysa","edmure","blackfish"]},
+  {id:"arryn",name:"Arryn",hc:"#4f74b0",seat:"Nido dell'Aquila · La Valle",mono:"A",
+   words:"Alto come l'Onore",orig:"As High as Honor",
+   status:"La morte del loro Lord, Primo Cavaliere, è la scintilla nascosta di tutto.",
+   members:["jonarryn","lysa"]},
+  {id:"greyjoy",name:"Greyjoy",hc:"#5a6770",seat:"Pyke · Le Isole di Ferro",mono:"G",
+   words:"Noi non seminiamo",orig:"We Do Not Sow",
+   status:"Predoni del mare. Theon, cresciuto dagli Stark, è diviso tra due famiglie.",
+   members:["theon","yara","balon","euron"]},
+  {id:"tyrell",name:"Tyrell",hc:"#3f8a52",seat:"Alto Giardino · L'Altopiano",mono:"T",
+   words:"Crescere Forti",orig:"Growing Strong",
+   status:"Ricchi di grano e di astuzia. Le loro alleanze matrimoniali muovono la corte.",
+   members:["margaery","olenna","loras"]},
+  {id:"martell",name:"Martell",hc:"#cf7a2e",seat:"Lancia del Sole · Dorne",mono:"M",
+   words:"Indomito, Inflessibile, Infranto",orig:"Unbowed, Unbent, Unbroken",
+   status:"Dorne, mai conquistata. Covano vendetta contro i Lannister.",
+   members:["oberyn","ellaria"]},
+  {id:"bolton",name:"Bolton",hc:"#a6486a",seat:"Forte Terrore · Il Nord",mono:"B",
+   words:"Le nostre lame sono affilate",orig:"Our Blades Are Sharp",
+   status:"Vassalli degli Stark che ne tradiscono la fiducia nel modo più brutale.",
+   members:["roose","ramsay"]},
+  {id:"frey",name:"Frey",hc:"#7a7d52",seat:"I Gemelli · Le Terre dei Fiumi",mono:"F",
+   words:"—",orig:"",
+   status:"Controllano l'unico ponte chiave. La loro ospitalità tradita resta indimenticabile.",
+   members:["walder"]}
+];
+
+const NEUTRAL = "#8c8675";
+const CH = {
+  ned:{name:"Eddard «Ned» Stark",house:"stark",role:"Lord di Grande Inverno, Primo Cavaliere",
+    why:"Il suo senso dell'onore e l'indagine sulla morte di Jon Arryn lo trascinano a corte — e accendono la miccia.",
+    rel:[{l:"Sposo di",to:["catelyn"]},{l:"Figli",to:["robb","sansa","arya","bran"]},{l:"Cresce",to:["jon"]},{l:"Fratelli",to:["benjen","lyanna"]},{l:"Amico di",to:["robert"]}],
+    esito:"Giustiziato ad Approdo del Re per ordine di Joffrey, dopo aver «confessato» tradimento per proteggere le figlie."},
+  catelyn:{name:"Catelyn Stark (Tully)",house:"stark",role:"Lady di Grande Inverno",
+    why:"Sospetta i Lannister della caduta di Bran e arresta Tyrion: il primo gesto che spacca il Continente.",
+    rel:[{l:"Sposa di",to:["ned"]},{l:"Casata d'origine",plain:"Tully"},{l:"Sorella di",to:["lysa","edmure"]}],
+    esito:"Uccisa alle Nozze Rosse, accanto al figlio Robb."},
+  robb:{name:"Robb Stark",house:"stark",role:"Re del Nord",
+    why:"Vince ogni battaglia ma perde la guerra: un voto d'amore infranto gli costa tutto.",
+    rel:[{l:"Figlio di",to:["ned","catelyn"]}],
+    esito:"Tradito e ucciso alle Nozze Rosse dai Frey e dai Bolton."},
+  sansa:{name:"Sansa Stark",house:"stark",role:"La figlia maggiore",
+    why:"Da pedina sognante a una delle giocatrici più lucide del Continente, passando per ogni umiliazione.",
+    rel:[{l:"Figlia di",to:["ned","catelyn"]},{l:"Costretta a sposare",to:["tyrion","ramsay"]}],
+    esito:"Diventa Regina del Nord, reso indipendente."},
+  arya:{name:"Arya Stark",house:"stark",role:"La figlia ribelle",
+    why:"Sopravvive nascosta tra i nemici e si addestra come assassina coi Senza Volto a Braavos.",
+    rel:[{l:"Figlia di",to:["ned","catelyn"]}],
+    esito:"Salpa a ovest della mappa, a esplorare ciò che nessuno conosce."},
+  bran:{name:"Brandon «Bran» Stark",house:"stark",role:"Il veggente",
+    why:"La sua caduta dalla torre (spinto da Jaime) è la prima domanda della serie. Diventa un veggente verde.",
+    rel:[{l:"Figlio di",to:["ned","catelyn"]}],
+    esito:"Diventa il Corvo con Tre Occhi e viene scelto Re dei Sei Regni."},
+  jon:{name:"Jon Snow",house:"stark",role:"Bastardo di Ned · Guardiano della Notte",
+    why:"Cresciuto come bastardo, prende il nero, sale fino a Lord Comandante e guida la guerra contro i morti.",
+    rel:[{l:"Cresciuto da",to:["ned"]},{l:"Amico di",to:["samwell"]}],
+    esito:"È figlio di Rhaegar Targaryen e Lyanna Stark — vero nome Aegon, erede legittimo. Uccide Daenerys e torna in esilio oltre la Barriera."},
+  benjen:{name:"Benjen Stark",house:"stark",role:"Primo Ranger dei Guardiani della Notte",
+    why:"Lo zio di Jon alla Barriera; scompare oltre il Muro nei primi episodi.",
+    rel:[{l:"Fratello di",to:["ned","lyanna"]}]},
+  lyanna:{name:"Lyanna Stark",house:"stark",role:"La sorella perduta",
+    why:"Promessa a Robert e «rapita» da Rhaegar: la sua storia è la vera causa della Ribellione.",
+    rel:[{l:"Sorella di",to:["ned","benjen"]},{l:"Promessa a",to:["robert"]}],
+    esito:"Madre segreta di Jon. Muore di parto a Torrederossa, facendo giurare a Ned di proteggere il bambino."},
+
+  tywin:{name:"Tywin Lannister",house:"lannister",role:"Lord di Castel Granito",
+    why:"Il vero potere dietro al trono: freddo stratega, architetto delle Nozze Rosse.",
+    rel:[{l:"Padre di",to:["cersei","jaime","tyrion"]}],
+    esito:"Ucciso da Tyrion con una balestra, mentre sedeva sul cesso."},
+  cersei:{name:"Cersei Lannister",house:"lannister",role:"Regina, poi Regina dei Sette Regni",
+    why:"Ambizione e amore proibito per il gemello: farà di tutto per i propri figli e per il trono.",
+    rel:[{l:"Gemella di",to:["jaime"]},{l:"Sorella di",to:["tyrion"]},{l:"Sposa di",to:["robert"]},{l:"Madre di",to:["joffrey","tommen","myrcella"]}],
+    esito:"Prende il trono dopo aver distrutto i rivali con l'altofuoco; muore nel crollo del Forte Rosso."},
+  jaime:{name:"Jaime Lannister",house:"lannister",role:"«Sterminatore di Re»",
+    why:"Uccise il Re Folle infrangendo il voto della Guardia Reale: un atto che lo segna per sempre.",
+    rel:[{l:"Gemello di",to:["cersei"]},{l:"Fratello di",to:["tyrion"]},{l:"Uccise",to:["aerys"]}],
+    esito:"Cerca la redenzione, ma torna da Cersei e muore con lei sotto le macerie."},
+  tyrion:{name:"Tyrion Lannister",house:"lannister",role:"«Il Folletto» · Primo Cavaliere",
+    why:"L'arma più affilata della famiglia è la sua mente. Disprezzato dai suoi, diventa indispensabile a tutti.",
+    rel:[{l:"Figlio di",to:["tywin"]},{l:"Fratelli",to:["cersei","jaime"]}],
+    esito:"Sopravvive a processi e tradimenti e diventa Primo Cavaliere del nuovo re, Bran."},
+  joffrey:{name:"Joffrey Baratheon",house:"lannister",role:"Re crudele",
+    why:"Il re bambino la cui crudeltà fa di Ned un martire e dei Lannister dei mostri.",
+    rel:[{l:"In realtà figlio di",to:["jaime","cersei"]},{l:"«Ufficialmente»",to:["robert"]}],
+    esito:"Avvelenato alle proprie nozze (le Nozze Viola)."},
+  tommen:{name:"Tommen Baratheon",house:"lannister",role:"Re bambino, mite",
+    why:"Pedina tra la madre Cersei e la moglie Margaery; troppo gentile per sopravvivere a corte.",
+    rel:[{l:"Figlio di",to:["cersei","jaime"]},{l:"Sposo di",to:["margaery"]}],
+    esito:"Si toglie la vita dopo che Cersei distrugge il Tempio con dentro Margaery."},
+  myrcella:{name:"Myrcella Baratheon",house:"lannister",role:"La principessa",
+    why:"Mandata a Dorne come pegno di pace; diventa bersaglio della vendetta dorniana.",
+    rel:[{l:"Figlia di",to:["cersei","jaime"]}],
+    esito:"Avvelenata da Ellaria Sand come vendetta per Oberyn."},
+
+  robert:{name:"Robert Baratheon",house:"baratheon",role:"Re dei Sette Regni",
+    why:"Vinse il trono per amore di Lyanna; ora regna stanco e ubriaco, cieco a ciò che lo circonda.",
+    rel:[{l:"Sposo di",to:["cersei"]},{l:"Promesso a",to:["lyanna"]},{l:"Amico di",to:["ned"]},{l:"Fratelli",to:["stannis","renly"]}],
+    esito:"Muore a caccia, ferito da un cinghiale dopo che il vino gli viene «aiutato»."},
+  stannis:{name:"Stannis Baratheon",house:"baratheon",role:"Pretendente, signore di Roccia del Drago",
+    why:"Rigido e legittimista, rivendica il trono come fratello del re; si affida alla magia rossa.",
+    rel:[{l:"Fratello di",to:["robert","renly"]},{l:"Consigliato da",to:["davos","melisandre"]}],
+    esito:"Sconfitto davanti a Grande Inverno e ucciso, dopo aver sacrificato la figlia al suo dio."},
+  renly:{name:"Renly Baratheon",house:"baratheon",role:"Il fratello minore, carismatico",
+    why:"Si autoproclama re col sostegno dei Tyrell, scavalcando Stannis.",
+    rel:[{l:"Fratello di",to:["robert","stannis"]},{l:"Legato a",to:["loras"]}],
+    esito:"Ucciso da un'ombra evocata dalla magia di Melisandre."},
+  gendry:{name:"Gendry",house:"baratheon",role:"Fabbro, bastardo di Robert",
+    why:"Ignaro del proprio sangue reale, è braccato proprio per quello.",
+    rel:[{l:"Padre",to:["robert"]}],
+    esito:"Legittimato come Gendry Baratheon, Lord di Capo Tempesta."},
+
+  daenerys:{name:"Daenerys Targaryen",house:"targaryen",role:"«Madre dei Draghi» · Khaleesi",
+    why:"Da sposa-bambina venduta a esule, fino a regina conquistatrice: l'unica con dei draghi vivi.",
+    rel:[{l:"Sorella di",to:["viserys"]},{l:"Sposa di",to:["drogo"]},{l:"Serve da",to:["jorah","tyrion"]}],
+    esito:"Conquista Approdo del Re ma incendia la città arresa; viene uccisa da Jon Snow."},
+  viserys:{name:"Viserys Targaryen",house:"targaryen",role:"«Re Mendicante»",
+    why:"Ossessionato dal trono perduto, vende la sorella per un esercito.",
+    rel:[{l:"Fratello di",to:["daenerys"]}],
+    esito:"Ucciso da Khal Drogo con una «corona» d'oro fuso."},
+  aerys:{name:"Aerys II «il Re Folle»",house:"targaryen",role:"Ultimo re Targaryen",
+    why:"La sua paranoia (e l'amore per l'altofuoco) provocò la Ribellione di Robert.",
+    rel:[{l:"Padre di",to:["rhaegar"]},{l:"Ucciso da",to:["jaime"]}],
+    esito:"Ucciso da Jaime durante il Sacco di Approdo del Re — fine della dinastia."},
+  rhaegar:{name:"Rhaegar Targaryen",house:"targaryen",role:"Il principe erede",
+    why:"La sua fuga con Lyanna fa esplodere la Ribellione. Figura più tragica che malvagia.",
+    rel:[{l:"Figlio di",to:["aerys"]},{l:"Con",to:["lyanna"]}],
+    esito:"Padre segreto di Jon. Ucciso da Robert al Tridente, nel cuore della Ribellione."},
+  drogo:{name:"Khal Drogo",house:"targaryen",role:"Condottiero Dothraki",
+    why:"Il guerriero che doveva dare a Dany un esercito — e le dà invece un risveglio.",
+    rel:[{l:"Sposo di",to:["daenerys"]}],
+    esito:"Ridotto in stato vegetativo da una ferita infetta; Dany pone fine alla sua sofferenza."},
+
+  jonarryn:{name:"Jon Arryn",house:"arryn",role:"Primo Cavaliere (defunto)",
+    why:"La sua morte misteriosa è il vero motore nascosto: indagava sul segreto dei Lannister.",
+    rel:[{l:"Sposo di",to:["lysa"]},{l:"Mentore di",to:["ned","robert"]}],
+    esito:"Avvelenato per ordine della moglie Lysa, manovrata da Ditocorto."},
+  lysa:{name:"Lysa Arryn (Tully)",house:"arryn",role:"Vedova, signora del Nido",
+    why:"Fragile e ossessionata; pedina e complice di Ditocorto.",
+    rel:[{l:"Sorella di",to:["catelyn"]},{l:"Vedova di",to:["jonarryn"]},{l:"Manovrata da",to:["littlefinger"]}],
+    esito:"Spinta dalla «Porta della Luna» da Ditocorto."},
+  edmure:{name:"Edmure Tully",house:"tully",role:"Erede di Delta delle Acque",
+    why:"Le sue nozze sono la trappola scelta dai Frey per le Nozze Rosse.",
+    rel:[{l:"Fratello di",to:["catelyn","lysa"]}]},
+  blackfish:{name:"Brynden «Blackfish» Tully",house:"tully",role:"Comandante, lo zio",
+    why:"Vecchio guerriero ostinato, ultimo baluardo della causa Tully.",
+    rel:[{l:"Zio di",to:["catelyn","lysa","edmure"]}]},
+
+  theon:{name:"Theon Greyjoy",house:"greyjoy",role:"Pupillo degli Stark",
+    why:"Cresciuto come ostaggio a Grande Inverno, lacerato tra due famiglie: il suo tradimento lo rovina.",
+    rel:[{l:"Cresciuto dagli",to:["ned"]},{l:"Sorella",to:["yara"]},{l:"Spezzato da",to:["ramsay"]}],
+    esito:"Si redime morendo per difendere Bran dall'esercito dei morti."},
+  yara:{name:"Yara Greyjoy",house:"greyjoy",role:"Erede delle Isole di Ferro",
+    why:"Capitana dura e leale; si allea con Daenerys contro lo zio Euron.",
+    rel:[{l:"Sorella di",to:["theon"]},{l:"Figlia di",to:["balon"]}]},
+  balon:{name:"Balon Greyjoy",house:"greyjoy",role:"Re ribelle delle Isole di Ferro",
+    why:"Già sconfitto da Robert, ci riprova durante la Guerra dei Cinque Re.",
+    rel:[{l:"Padre di",to:["theon","yara"]}]},
+  euron:{name:"Euron Greyjoy",house:"greyjoy",role:"Lo zio predone",
+    why:"Spietato e teatrale; porta la sua flotta dalla parte di Cersei.",
+    rel:[{l:"Zio di",to:["theon","yara"]},{l:"Alleato di",to:["cersei"]}]},
+
+  margaery:{name:"Margaery Tyrell",house:"tyrell",role:"Regina abilissima",
+    why:"Sa esattamente come farsi amare dal popolo e manovrare i re che sposa.",
+    rel:[{l:"Sposa di",to:["renly","joffrey","tommen"]},{l:"Nipote di",to:["olenna"]},{l:"Sorella di",to:["loras"]}],
+    esito:"Muore nell'esplosione del Tempio orchestrata da Cersei."},
+  olenna:{name:"Olenna Tyrell",house:"tyrell",role:"«La Regina di Spine»",
+    why:"La lingua più tagliente del Continente; vera mente della casata.",
+    rel:[{l:"Nonna di",to:["margaery","loras"]}],
+    esito:"Confessa a Jaime di aver avvelenato Joffrey, un attimo prima di bere il veleno che lui le offre."},
+  loras:{name:"Loras Tyrell",house:"tyrell",role:"«Il Cavaliere dei Fiori»",
+    why:"Campione di tornei, legato a Renly; bersaglio dei fanatici Passeri.",
+    rel:[{l:"Legato a",to:["renly"]},{l:"Fratello di",to:["margaery"]}]},
+
+  oberyn:{name:"Oberyn Martell",house:"martell",role:"«La Vipera Rossa»",
+    why:"Viene ad Approdo del Re per vendicare la sorella, uccisa nella Ribellione.",
+    rel:[{l:"Amante",to:["ellaria"]}],
+    esito:"Sta per battere la Montagna nel duello per Tyrion, ma la sua sete di confessione lo uccide."},
+  ellaria:{name:"Ellaria Sand",house:"martell",role:"Amante di Oberyn",
+    why:"Trasforma il lutto in vendetta cieca contro tutti i Lannister.",
+    rel:[{l:"Amante di",to:["oberyn"]}]},
+
+  roose:{name:"Roose Bolton",house:"bolton",role:"Vassallo traditore",
+    why:"Pugnala Robb alle Nozze Rosse e si prende il Nord come premio.",
+    rel:[{l:"Padre di",to:["ramsay"]}],
+    esito:"Ucciso dal figlio Ramsay, impaziente di ereditare."},
+  ramsay:{name:"Ramsay Bolton",house:"bolton",role:"Il sadico",
+    why:"Tortura Theon e tormenta Sansa: l'antagonista più disturbante del Nord.",
+    rel:[{l:"Figlio di",to:["roose"]},{l:"Sposa",to:["sansa"]},{l:"Spezza",to:["theon"]}],
+    esito:"Sconfitto da Jon nella Battaglia dei Bastardi e divorato dai suoi stessi mastini."},
+  walder:{name:"Walder Frey",house:"frey",role:"Signore dei Gemelli",
+    why:"Offeso da Robb, organizza le Nozze Rosse violando ogni legge dell'ospitalità.",
+    rel:[{l:"Ospita (e tradisce)",to:["robb","catelyn"]}],
+    esito:"Ucciso da Arya Stark, che gli serve i figli in un pasticcio prima di tagliargli la gola."},
+
+  /* Figure chiave senza casata */
+  littlefinger:{name:"Petyr «Ditocorto» Baelish",house:null,role:"Maestro del Conio · manipolatore",
+    why:"Ama il caos come una scala: quasi ogni tragedia ha le sue impronte, a partire dalla morte di Jon Arryn.",
+    rel:[{l:"Ossessionato da",to:["catelyn"]},{l:"Usa",to:["lysa","sansa"]}],
+    esito:"Smascherato e giustiziato a Grande Inverno dai fratelli Stark."},
+  varys:{name:"Varys «il Ragno»",house:null,role:"Maestro dei Sussurri",
+    why:"La sua rete di spie serve, dice, «il Continente» — non un re in particolare.",
+    rel:[{l:"Serve poi",to:["daenerys"]}],
+    esito:"Giustiziato da Daenerys per averla tradita a favore di Jon."},
+  brienne:{name:"Brienne di Tarth",house:null,role:"Cavaliere senza pari",
+    why:"Incarna l'onore che quasi tutti gli altri hanno perso; protegge le figlie Stark.",
+    rel:[{l:"Giura a",to:["catelyn"]},{l:"Lega con",to:["jaime"]}]},
+  davos:{name:"Davos Seaworth",house:null,role:"«Il Cavaliere della Cipolla»",
+    why:"Ex contrabbandiere, voce della coscienza prima per Stannis, poi per Jon.",
+    rel:[{l:"Serve",to:["stannis","jon"]}]},
+  samwell:{name:"Samwell Tarly",house:null,role:"Guardiano della Notte, studioso",
+    why:"Goffo ma geniale: scopre verità decisive, inclusa l'origine di Jon.",
+    rel:[{l:"Migliore amico di",to:["jon"]}]},
+  melisandre:{name:"Melisandre",house:null,role:"Sacerdotessa Rossa di R'hllor",
+    why:"Porta la magia oscura del Signore della Luce nella politica del Continente.",
+    rel:[{l:"Consiglia",to:["stannis"]}]},
+  jorah:{name:"Jorah Mormont",house:null,role:"Cavaliere esule",
+    why:"Spia diventata protettore devoto: la sua lealtà a Dany è totale.",
+    rel:[{l:"Devoto a",to:["daenerys"]}],
+    esito:"Muore difendendo Daenerys nella battaglia contro l'esercito dei morti."},
+  thehound:{name:"Sandor «il Mastino» Clegane",house:null,role:"Guerriero sfregiato",
+    why:"Brutale ma onesto; il suo viaggio con Arya lo rende quasi un mentore.",
+    rel:[{l:"Fratello di",to:["themountain"]},{l:"Viaggia con",to:["arya"]}],
+    esito:"Muore nel duello finale contro il fratello, la Montagna."},
+  themountain:{name:"Gregor «la Montagna» Clegane",house:null,role:"Il bruto dei Lannister",
+    why:"Forza pura al servizio di Cersei; uccide Oberyn nel duello.",
+    rel:[{l:"Fratello di",to:["thehound"]},{l:"Al servizio di",to:["cersei"]}]},
+  bronn:{name:"Bronn",house:null,role:"Mercenario opportunista",
+    why:"Combatte per chi paga di più; per fortuna di Tyrion, gli è quasi affezionato.",
+    rel:[{l:"Al fianco di",to:["tyrion","jaime"]}],
+    esito:"Ottiene un titolo e diventa Maestro del Conio del nuovo regno."}
+};
+
+const PHASES = [
+  {n:"00",title:"Antefatti",sub:"Quello che è successo prima del primo episodio.",
+   events:[
+    {h:"La Conquista di Aegon (~300 anni prima)",d:"Aegon Targaryen unifica i Sette Regni con i suoi draghi e forgia il Trono di Spade. Inizia il dominio dei Targaryen.",links:["targaryen"]},
+    {h:"Il Re Folle",d:"Generazioni dopo, Aerys II precipita nella paranoia e nella crudeltà, ossessionato dall'altofuoco.",links:["aerys"]},
+    {h:"La Ribellione di Robert",d:"Dopo la fuga di Rhaegar con Lyanna, Robert, Ned e Jon Arryn insorgono. Robert uccide Rhaegar al Tridente; Jaime uccide Aerys («Sterminatore di Re»). I Targaryen cadono; Robert diventa re e sposa Cersei; Viserys e Daenerys fuggono in esilio.",links:["robert","rhaegar","aerys","jaime","lyanna","daenerys"]},
+    {h:"Il giuramento al promontorio",d:"Lyanna muore di parto facendo giurare a Ned di proteggere il neonato. Ned lo cresce come proprio bastardo: Jon Snow.",links:["lyanna","ned","jon"]}
+   ]},
+  {n:"01",title:"La scintilla",sub:"Stagione 1 — una morte sospetta cambia tutto.",
+   events:[
+    {h:"La morte di Jon Arryn",d:"Il Primo Cavaliere muore di colpo. Robert va a Nord e convince Ned a prenderne il posto.",links:["jonarryn","ned","robert"]},
+    {h:"La caduta di Bran",d:"Bran scopre Jaime e Cersei insieme; per zittirlo, Jaime lo spinge dalla torre.",links:["bran","jaime","cersei"]},
+    {h:"Daenerys oltre il Mare Stretto",d:"Viserys vende Dany a Khal Drogo per un esercito. Lei riceve in dono tre uova di drago pietrificate.",links:["daenerys","viserys","drogo"]},
+    {h:"Il segreto svelato",d:"Ned capisce che i figli «di Robert» sono in realtà frutto dell'incesto tra Jaime e Cersei.",links:["ned","cersei","jaime","joffrey"]},
+    {h:"La caduta di Ned",d:"Morto Robert, Joffrey fa giustiziare Ned. Scoppia la Guerra dei Cinque Re.",links:["ned","joffrey","robb"]},
+    {h:"La nascita dei draghi",d:"Sul rogo di Drogo, Dany entra nelle fiamme e ne esce illesa con tre draghi appena nati.",links:["daenerys","drogo"]}
+   ]},
+  {n:"02",title:"La Guerra dei Cinque Re",sub:"Stagioni 2–3 — il Continente si frantuma.",
+   events:[
+    {h:"Cinque corone in lotta",d:"Robb è Re del Nord; Stannis e Renly si contendono l'eredità Baratheon; Balon rivendica le Isole di Ferro. Theon prende Grande Inverno.",links:["robb","stannis","renly","balon","theon"]},
+    {h:"Battaglia delle Acque Nere",d:"Tyrion difende Approdo del Re dall'attacco di Stannis con l'altofuoco; Tywin e i Tyrell arrivano a salvare la città.",links:["tyrion","stannis","tywin","margaery"]},
+    {h:"Dany e gli Immacolati",d:"A est, Daenerys conquista un esercito di soldati-schiavi liberati e inizia a farsi un nome come liberatrice.",links:["daenerys"]},
+    {h:"Le Nozze Rosse",d:"Walder Frey e Roose Bolton tradiscono l'ospitalità e massacrano Robb e Catelyn. La causa Stark crolla.",links:["walder","roose","robb","catelyn"]}
+   ]},
+  {n:"03",title:"Conseguenze",sub:"Stagioni 4–5 — vendette, fughe e una minaccia a Nord.",
+   events:[
+    {h:"Le Nozze Viola",d:"Joffrey viene avvelenato al banchetto nuziale. Tyrion è accusato; il duello per la sua vita finisce nel sangue di Oberyn.",links:["joffrey","tyrion","oberyn","themountain"]},
+    {h:"Tyrion uccide Tywin e fugge",d:"Liberato in segreto, Tyrion uccide il padre e attraversa il mare verso Daenerys.",links:["tyrion","tywin"]},
+    {h:"Le strade si dividono",d:"Arya salpa per Braavos e i Senza Volto; Sansa finisce nel Vale con Ditocorto, che uccide Lysa.",links:["arya","sansa","littlefinger","lysa"]},
+    {h:"Hardhome e gli Estranei",d:"Jon, ora Lord Comandante, vede coi propri occhi l'esercito dei morti. La vera guerra non è per il trono.",links:["jon"]},
+    {h:"Il cammino della vergogna",d:"Cersei arma i fanatici Passeri e ne resta prigioniera, umiliata per le vie di Approdo del Re.",links:["cersei"]}
+   ]},
+  {n:"04",title:"Riallineamenti",sub:"Stagioni 6–7 — vecchie regine cadono, una nuova arriva.",
+   events:[
+    {h:"La Battaglia dei Bastardi",d:"Con l'aiuto del Vale, Jon riprende Grande Inverno e Ramsay viene distrutto. Jon è acclamato Re del Nord.",links:["jon","ramsay","sansa"]},
+    {h:"Il Tempio in fiamme",d:"Cersei distrugge il Tempio con l'altofuoco, eliminando i Tyrell e i Passeri. Tommen si suicida; lei sale al trono.",links:["cersei","margaery","olenna","tommen"]},
+    {h:"La verità su Jon",d:"Bran e Sam ricostruiscono l'origine di Jon: è un Targaryen, erede legittimo del trono.",links:["jon","bran","samwell"]},
+    {h:"Daenerys salpa per Westeros",d:"Con draghi, Immacolati, Dothraki e nuove alleanze, Dany attraversa finalmente il Mare Stretto.",links:["daenerys","tyrion","yara","ellaria"]},
+    {h:"La Barriera cede",d:"L'esercito dei morti sfonda il Muro usando un drago caduto come arma.",links:["jon"]}
+   ]},
+  {n:"05",title:"La fine",sub:"Stagione 8 — i conti si chiudono, nel bene e nel male.",
+   events:[
+    {h:"La Lunga Notte",d:"A Grande Inverno, i vivi affrontano l'esercito dei morti. Arya colpisce il Re della Notte e mette fine alla minaccia.",links:["arya","jon","daenerys","jorah","theon"]},
+    {h:"Il rogo di Approdo del Re",d:"Daenerys attacca la capitale e, nonostante la resa, incendia la città intera.",links:["daenerys","cersei","jaime"]},
+    {h:"La scelta di Jon",d:"Per fermare la regina che ama, Jon uccide Daenerys. I draghi e la conquista finiscono.",links:["jon","daenerys"]},
+    {h:"Un nuovo regno",d:"Bran è scelto Re dei Sei Regni; il Nord diventa indipendente con Sansa regina; Jon torna oltre la Barriera; Arya parte a esplorare.",links:["bran","sansa","jon","arya","tyrion"]}
+   ]}
+];
+
+const GLOSS = [
+  {t:"Trono di Spade",o:"Iron Throne",d:"Il seggio forgiato con le spade dei nemici di Aegon: simbolo del dominio sui Sette Regni."},
+  {t:"Primo Cavaliere",o:"Hand of the King",d:"Il più alto consigliere del re, che governa in sua vece. Carica pericolosa quanto potente."},
+  {t:"Custode / Protettore",o:"Warden",d:"Titolo militare su una delle grandi regioni (es. il Custode del Nord). Spesso ereditario."},
+  {t:"I Guardiani della Notte",o:"Night's Watch",d:"L'ordine giurato che difende la Barriera dalle minacce del Nord. Si rinuncia a terre, titoli e famiglia."},
+  {t:"La Barriera",o:"The Wall",d:"Muro di ghiaccio alto centinaia di metri che separa i Sette Regni dalle terre selvagge oltre il Nord."},
+  {t:"Bruti / Popolo Libero",o:"Wildlings / Free Folk",d:"Le genti che vivono oltre la Barriera, senza riconoscere alcun re."},
+  {t:"Estranei e Re della Notte",o:"White Walkers / Night King",d:"Creature di ghiaccio antichissime che comandano un esercito di morti. La minaccia esistenziale della saga."},
+  {t:"Ossidiana e acciaio di Valyria",o:"Dragonglass / Valyrian steel",d:"Gli unici due materiali capaci di uccidere gli Estranei."},
+  {t:"Khaleesi, Khal, Dothraki",o:"",d:"I Dothraki sono guerrieri nomadi a cavallo. Il Khal è il loro condottiero; la Khaleesi è la sua regina."},
+  {t:"Immacolati",o:"Unsullied",d:"Soldati-schiavi addestrati alla disciplina assoluta, liberati e guidati da Daenerys."},
+  {t:"I Senza Volto",o:"Faceless Men",d:"Assassini-sacerdoti di Braavos, capaci di cambiare aspetto. Il loro saluto: «Valar Morghulis»."},
+  {t:"Maestri",o:"Maesters",d:"Studiosi, medici e consiglieri formati alla Cittadella; ogni castello ne ha uno."},
+  {t:"La Guardia Reale",o:"Kingsguard",d:"I sette cavalieri votati a proteggere il re per tutta la vita. Romperne il voto è infamia (vedi Jaime)."},
+  {t:"Altofuoco",o:"Wildfire",d:"La «sostanza verde»: un fuoco alchemico inestinguibile, arma e ossessione dei Targaryen e poi di Cersei."},
+  {t:"Cognomi dei bastardi",o:"",d:"I figli illegittimi prendono un cognome regionale: Snow (Nord), Sand (Dorne), Rivers (Fiumi), Flowers (Altopiano), Storm (Terre della Tempesta), Hill (Ovest), Waters (dintorni della capitale)."},
+  {t:"Metamorfo e Corvo con Tre Occhi",o:"Warg / Three-Eyed Raven",d:"Chi sa entrare nella mente degli animali è un metamorfo; il Corvo con Tre Occhi vede passato, presente e futuro."},
+  {t:"R'hllor, il Signore della Luce",o:"",d:"Religione dei Sacerdoti Rossi (come Melisandre), basata sul fuoco e su profezie."},
+  {t:"Le Nozze Rosse",o:"",d:"Il massacro di Robb e Catelyn ospiti dei Frey: il momento che riscrive le regole della serie."},
+  {t:"Le Nozze Viola",o:"",d:"Il banchetto in cui Joffrey muore avvelenato."},
+  {t:"Valar Morghulis / Valar Dohaeris",o:"",d:"Antiche frasi valyriane: «Tutti gli uomini devono morire» / «Tutti gli uomini devono servire»."},
+  {t:"I Sette e i Vecchi Dèi",o:"",d:"Le due fedi principali: la Fede dei Sette (al Sud) e i Vecchi Dèi degli alberi-diga (al Nord)."},
+  {t:"Dracarys",o:"",d:"Il comando in valyriano con cui Daenerys ordina ai draghi di sputare fuoco."},
+  {t:"Approdo del Re",o:"King's Landing",d:"La capitale dei Sette Regni, sede del Trono di Spade e del Forte Rosso."},
+  {t:"Grande Inverno e Roccia del Drago",o:"Winterfell / Dragonstone",d:"La roccaforte degli Stark nel Nord; l'isola-fortezza ancestrale dei Targaryen."}
+];
+
+/* ============ ALBERI GENEALOGICI ============ */
+const TREES = [
+ {id:"stark",label:"Stark",hc:"#7b8794",
+  root:{name:"Rickard Stark",r:"Lord di Grande Inverno · ucciso dal Re Folle",kids:[
+    {name:"Brandon Stark",r:"primogenito · ucciso dal Re Folle"},
+    {id:"ned",r:"Lord di Grande Inverno",sp:{id:"catelyn"},kids:[
+      {id:"robb",r:"Re del Nord"},{id:"sansa"},{id:"arya"},{id:"bran"}]},
+    {id:"lyanna",r:"«rapita» da Rhaegar",sp:{id:"rhaegar",r:"unione segreta"},kids:[
+      {id:"jon",r:"cresciuto come bastardo di Ned"}]},
+    {id:"benjen",r:"Guardiano della Notte"}]},
+  note:"Il segreto della saga: <b>Jon Snow</b> è figlio di Lyanna e di Rhaegar Targaryen, non di Ned — quindi vero erede al Trono."},
+ {id:"lannister",label:"Lannister",hc:"#9c1f2e",
+  root:{id:"tywin",sp:{name:"Joanna (defunta)"},kids:[
+    {id:"cersei",r:"Regina",sp:{id:"robert",r:"figli in realtà di Jaime"},kids:[
+      {id:"joffrey"},{id:"myrcella"},{id:"tommen"}]},
+    {id:"jaime",r:"gemello di Cersei",sp:{id:"cersei",r:"unione segreta"}},
+    {id:"tyrion"}]},
+  note:"I tre «figli reali» di Cersei nascono in verità dal gemello <b>Jaime</b>: è il segreto che fa cadere Ned."},
+ {id:"baratheon",label:"Baratheon",hc:"#c8951f",
+  root:{name:"I tre fratelli Baratheon",r:"dopo la Ribellione di Robert",kids:[
+    {id:"robert",r:"Re dei Sette Regni",sp:{id:"cersei"},kids:[
+      {id:"gendry",r:"bastardo non riconosciuto"}]},
+    {id:"stannis",sp:{name:"Selyse"},kids:[{name:"Shireen",r:"sacrificata al fuoco"}]},
+    {id:"renly"}]},
+  note:"Alla morte di Robert i fratelli si proclamano re l'uno contro l'altro: la scintilla della <b>Guerra dei Cinque Re</b>."},
+ {id:"targaryen",label:"Targaryen",hc:"#9a2c33",
+  root:{id:"aerys",r:"il Re Folle · ultimo re Targaryen",kids:[
+    {id:"rhaegar",r:"principe erede",sp:{id:"lyanna",r:"unione segreta"},kids:[
+      {id:"jon",r:"vero erede Targaryen"}]},
+    {id:"viserys",r:"Re Mendicante"},
+    {id:"daenerys",r:"Madre dei Draghi",sp:{id:"drogo"}}]},
+  note:"Mi fermo qui di proposito: la <b>storia Targaryen più antica</b> è la materia di <em>House of the Dragon</em>, e la lascio in ombra per non rovinartela."},
+ {id:"tully",label:"Tully · Arryn",hc:"#2f7fa0",
+  root:{name:"Hoster Tully",r:"Lord del Delta delle Acque",kids:[
+    {id:"catelyn",r:"sposa Ned Stark"},
+    {id:"lysa",r:"sposa Jon Arryn",sp:{id:"jonarryn"},kids:[
+      {name:"Robin Arryn",r:"erede della Valle"}]},
+    {id:"edmure",r:"erede delle Terre dei Fiumi"}]},
+  note:"I <b>Tully</b> sono lo snodo dei legami: imparentano gli Stark (col Nord) e gli Arryn (con la Valle)."}
+];
+
+/* ============ STATO E RENDER ============ */
+const main = document.getElementById("main");
+const drawer = document.getElementById("drawer");
+const scrim = document.getElementById("scrim");
+let activeTab = "casate";
+let charFilter = "tutti";
+let activeTree = "stark";
+
+const houseById = id => HOUSES.find(h=>h.id===id);
+const hcOf = id => { const c=CH[id]; if(!c) return NEUTRAL; const h=houseById(c.house); return h?h.hc:NEUTRAL; };
+const houseName = id => { const h=houseById(id); return h?h.name:"—"; };
+
+function esc(s){return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+function chipFor(id){
+  const c=CH[id]; if(!c) return "";
+  return `<button class="chip" style="--hc:${hcOf(id)}" data-char="${id}">${esc(c.name.split("«")[0].trim())}</button>`;
+}
+
+/* ----- Casate ----- */
+function renderHouses(){
+  const cards = HOUSES.map(h=>{
+    const mem = h.members.filter(m=>CH[m]).map(chipFor).join("");
+    const targNote = h.id==="targaryen"
+      ? `<p class="tnote">La cronaca antica dei Targaryen — quella di <em>House of the Dragon</em> — è omessa di proposito.</p>` : "";
+    const wordsBlock = h.words==="—" ? "" :
+      `<p class="words">«${esc(h.words)}»${h.orig?`<span class="orig">${esc(h.orig)}</span>`:""}</p>`;
+    return `<article class="house" style="--hc:${h.hc}">
+      <div class="band"></div>
+      <div class="inner">
+        <div class="seal">${esc(h.mono)}</div>
+        <h3>Casa ${esc(h.name)}</h3>
+        <div class="seat">${esc(h.seat)}</div>
+        ${wordsBlock}
+        <p class="status">${esc(h.status)}</p>
+        <div class="members">${mem}</div>
+        ${targNote}
+      </div>
+    </article>`;
+  }).join("");
+  return `<div class="panelhead"><h2>Le Casate</h2><p>Tocca un nome per aprirne la scheda e seguirne i legami.</p></div>
+    <div class="houses">${cards}</div>`;
+}
+
+/* ----- Personaggi ----- */
+function renderChars(){
+  const filters = [["tutti","Tutti"]].concat(HOUSES.map(h=>[h.id,h.name])).concat([["altri","Senza casata"]]);
+  const ftags = filters.map(([id,lbl])=>`<button class="ftag ${charFilter===id?"active":""}" data-filter="${id}">${esc(lbl)}</button>`).join("");
+  const ids = Object.keys(CH).filter(id=>{
+    if(charFilter==="tutti") return true;
+    if(charFilter==="altri") return CH[id].house===null;
+    return CH[id].house===charFilter;
+  });
+  const cards = ids.map(id=>{
+    const c=CH[id];
+    return `<button class="pcard" style="--hc:${hcOf(id)}" data-char="${id}">
+      <div class="nm">${esc(c.name)}</div>
+      <div class="rl">${esc(c.role)}</div>
+      <div class="hs">${c.house?esc(houseName(c.house)):"Senza casata"}</div>
+    </button>`;
+  }).join("");
+  return `<div class="panelhead"><h2>Personaggi &amp; Legami</h2><p>Apri una scheda e salta da un parente all'altro per ricostruire l'albero.</p></div>
+    <div class="charfilter">${ftags}</div>
+    <div class="chars">${cards}</div>`;
+}
+
+/* ----- Cronologia ----- */
+function renderTimeline(){
+  const phases = PHASES.map(p=>{
+    const evts = p.events.map(e=>{
+      const links = (e.links||[]).filter(id=>CH[id]).map(chipFor).join("");
+      return `<div class="evt"><h4>${esc(e.h)}</h4><p>${esc(e.d)}</p>${links?`<div class="links">${links}</div>`:""}</div>`;
+    }).join("");
+    return `<div class="phase">
+      <p class="ph-title"><span class="ph-num">${esc(p.n)}</span>${esc(p.title)}</p>
+      <p class="ph-sub">${esc(p.sub)}</p>
+      <div class="events">${evts}</div>
+    </div>`;
+  }).join("");
+  return `<div class="panelhead"><h2>La Cronologia</h2><p>Dalla Ribellione di Robert all'ultima stagione — i nodi che tengono insieme la storia.</p></div>
+    <div class="phases">${phases}</div>`;
+}
+
+/* ----- Glossario ----- */
+function renderGloss(list){
+  const data = list||GLOSS;
+  const terms = data.map(g=>`<dl class="term"><dt>${esc(g.t)}${g.o?`<span>${esc(g.o)}</span>`:""}</dt><dd>${esc(g.d)}</dd></dl>`).join("");
+  return `<div class="panelhead"><h2>Il Glossario</h2><p>I termini, gli ordini e le frasi che tornano di continuo.</p></div>
+    <div class="terms">${terms}</div>`;
+}
+
+/* ----- Alberi genealogici ----- */
+function famNodeMarkup(node){
+  const c = node.id && CH[node.id] ? CH[node.id] : null;
+  const nm = c ? c.name : node.name;
+  const hc = c ? hcOf(node.id) : "var(--line)";
+  const inner = `<span class="fn">${esc(nm)}</span>${node.r?`<span class="fr">${esc(node.r)}</span>`:""}`;
+  return c
+    ? `<button class="fnode go" style="--hc:${hc}" data-char="${node.id}">${inner}</button>`
+    : `<span class="fnode" style="--hc:${hc}">${inner}</span>`;
+}
+function famLi(node){
+  let h = `<li>${famNodeMarkup(node)}`;
+  if(node.sp) h += `<span class="funion">⚭</span>${famNodeMarkup(node.sp)}`;
+  if(node.kids&&node.kids.length) h += `<div class="fkl">discendenza</div><ul>${node.kids.map(famLi).join("")}</ul>`;
+  return h + `</li>`;
+}
+function renderTrees(){
+  const sel = TREES.map(t=>`<button class="ftag ${activeTree===t.id?"active":""}" data-tree="${t.id}">${esc(t.label)}</button>`).join("");
+  const t = TREES.find(x=>x.id===activeTree) || TREES[0];
+  const body = `<ul class="famtree" style="--hc:${t.hc}">${famLi(t.root)}</ul>`;
+  const note = t.note ? `<p class="fnote">${t.note}</p>` : "";
+  return `<div class="panelhead"><h2>Alberi Genealogici</h2><p>Tocca un nome per aprirne la scheda. I parenti «di sfondo» restano in grigio.</p></div>
+    <div class="charfilter">${sel}</div>
+    <div class="treebox">${body}</div>${note}`;
+}
+
+/* ----- Drawer ----- */
+function openChar(id){
+  const c=CH[id]; if(!c) return;
+  const hc=hcOf(id);
+  const rels = (c.rel||[]).map(r=>{
+    let vals="";
+    if(r.to){ vals=`<div class="rvals">${r.to.map(chipFor).join("")}</div>`; }
+    else if(r.plain){ vals=`<span class="rplain">${esc(r.plain)}</span>`; }
+    return `<div class="rel"><span class="rlabel">${esc(r.l)}</span>${vals}</div>`;
+  }).join("");
+  const esitoBlock = c.esito
+    ? `<div class="fate"><span class="lbl">Esito</span><span class="val">${esc(c.esito)}</span></div>` : "";
+  drawer.innerHTML = `
+    <div class="dh">
+      <div class="dband" style="background:${hc}"></div>
+      <button class="dclose" id="dclose" aria-label="Chiudi">×</button>
+      <h3>${esc(c.name)}</h3>
+      <div class="drole">${esc(c.role)}</div>
+      <span class="dhouse" style="--hc:${hc}">${c.house?esc("Casa "+houseName(c.house)):"Senza casata"}</span>
+    </div>
+    <div class="db">
+      <p class="why">${esc(c.why)}</p>
+      ${rels?`<div class="relblock"><p class="rh">Legami</p>${rels}</div>`:""}
+      ${esitoBlock}
+    </div>`;
+  drawer.classList.add("open"); drawer.setAttribute("aria-hidden","false");
+  scrim.classList.add("open");
+  document.getElementById("dclose").addEventListener("click",closeDrawer);
+}
+function closeDrawer(){drawer.classList.remove("open");drawer.setAttribute("aria-hidden","true");scrim.classList.remove("open");}
+scrim.addEventListener("click",closeDrawer);
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeDrawer();});
+
+/* ----- Ricerca ----- */
+function renderSearch(term){
+  const q=term.toLowerCase();
+  const chars=Object.keys(CH).filter(id=>{
+    const c=CH[id];
+    return (c.name+" "+c.role+" "+(c.why||"")+" "+(houseName(c.house||""))).toLowerCase().includes(q);
+  });
+  const houses=HOUSES.filter(h=>(h.name+" "+h.seat+" "+h.words+" "+h.status).toLowerCase().includes(q));
+  const terms=GLOSS.filter(g=>(g.t+" "+g.o+" "+g.d).toLowerCase().includes(q));
+  const events=[];
+  PHASES.forEach(p=>p.events.forEach(e=>{if((e.h+" "+e.d).toLowerCase().includes(q))events.push(e);}));
+
+  let html=`<div class="panelhead"><h2>Risultati per «${esc(term)}»</h2></div>`;
+  if(!chars.length&&!houses.length&&!terms.length&&!events.length){
+    return html+`<p class="empty">Nessun risultato. Prova con un nome diverso (es. «Nozze Rosse», «Tyrion», «altofuoco»).</p>`;
+  }
+  if(chars.length){
+    html+=`<div class="resultgroup"><p class="rgh">Personaggi · ${chars.length}</p><div class="chars">`+
+      chars.map(id=>{const c=CH[id];return `<button class="pcard" style="--hc:${hcOf(id)}" data-char="${id}"><div class="nm">${esc(c.name)}</div><div class="rl">${esc(c.role)}</div><div class="hs">${c.house?esc(houseName(c.house)):"Senza casata"}</div></button>`;}).join("")+
+      `</div></div>`;
+  }
+  if(houses.length){
+    html+=`<div class="resultgroup"><p class="rgh">Casate · ${houses.length}</p><div class="houses">`+
+      houses.map(h=>`<article class="house" style="--hc:${h.hc}"><div class="band"></div><div class="inner"><div class="seal">${esc(h.mono)}</div><h3>Casa ${esc(h.name)}</h3><div class="seat">${esc(h.seat)}</div><p class="status">${esc(h.status)}</p></div></article>`).join("")+
+      `</div></div>`;
+  }
+  if(events.length){
+    html+=`<div class="resultgroup"><p class="rgh">Eventi · ${events.length}</p><div class="events" style="border:0;padding-left:0;margin-left:0">`+
+      events.map(e=>`<div class="evt" style="padding-left:0"><h4>${esc(e.h)}</h4><p>${esc(e.d)}</p></div>`).join("")+
+      `</div></div>`;
+  }
+  if(terms.length){
+    html+=`<div class="resultgroup"><p class="rgh">Glossario · ${terms.length}</p><div class="terms">`+
+      terms.map(g=>`<dl class="term"><dt>${esc(g.t)}${g.o?`<span>${esc(g.o)}</span>`:""}</dt><dd>${esc(g.d)}</dd></dl>`).join("")+
+      `</div></div>`;
+  }
+  return html;
+}
+
+/* ----- Router ----- */
+function paint(){
+  const q=document.getElementById("q").value.trim();
+  if(q.length>=2){ main.innerHTML=renderSearch(q); bind(); return; }
+  if(activeTab==="casate") main.innerHTML=renderHouses();
+  else if(activeTab==="personaggi") main.innerHTML=renderChars();
+  else if(activeTab==="cronologia") main.innerHTML=renderTimeline();
+  else if(activeTab==="alberi") main.innerHTML=renderTrees();
+  else if(activeTab==="glossario") main.innerHTML=renderGloss();
+  bind();
+}
+function bind(){
+  main.querySelectorAll("[data-char]").forEach(el=>el.addEventListener("click",()=>openChar(el.dataset.char)));
+  main.querySelectorAll("[data-filter]").forEach(el=>el.addEventListener("click",()=>{charFilter=el.dataset.filter;paint();}));
+  main.querySelectorAll("[data-tree]").forEach(el=>el.addEventListener("click",()=>{activeTree=el.dataset.tree;paint();window.scrollTo({top:0,behavior:"smooth"});}));
+}
+
+/* tabs */
+document.getElementById("tabs").addEventListener("click",e=>{
+  const b=e.target.closest(".tab"); if(!b)return;
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  b.classList.add("active"); activeTab=b.dataset.t;
+  document.getElementById("q").value=""; document.getElementById("clr").style.display="none";
+  paint(); window.scrollTo({top:0,behavior:"smooth"});
+});
+/* search */
+const qEl=document.getElementById("q"), clrEl=document.getElementById("clr");
+qEl.addEventListener("input",()=>{clrEl.style.display=qEl.value?"block":"none";paint();});
+clrEl.addEventListener("click",()=>{qEl.value="";clrEl.style.display="none";paint();qEl.focus();});
+/* fate switch */
+const fs=document.getElementById("fateSwitch");
+function toggleFate(){
+  const on=fs.classList.toggle("on");
+  fs.setAttribute("aria-checked",on);
+  document.body.classList.toggle("hide-fates",!on);
+  fs.lastElementChild.textContent = on ? "Mostra esiti finali (fine serie)" : "Esiti finali nascosti — tocca per vedere";
+}
+fs.addEventListener("click",toggleFate);
+fs.addEventListener("keydown",e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();toggleFate();}});
+
+paint();
+</script>
+<script>
+if("serviceWorker"in navigator&&location.protocol.startsWith("http")){
+  window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+}
+</script>
+</body>
+</html>
