@@ -1,4 +1,4 @@
-const CACHE = "bussola-westeros-v1";
+const CACHE = "bussola-westeros-v2";
 const ASSETS = [
   "./",
   "./index.html",
